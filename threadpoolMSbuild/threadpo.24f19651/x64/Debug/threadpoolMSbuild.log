@@ -1,0 +1,243 @@
+﻿开始生成时的环境:
+ALLUSERSPROFILE = C:\ProgramData
+APPDATA = C:\Users\jiachangkun\AppData\Roaming
+ChocolateyInstall = C:\ProgramData\chocolatey
+ChocolateyLastPathUpdate = 133734641551036965
+CLion = D:\Program Files\JetBrains\CLion 2025.1.2\bin;
+CMAKE_PREFIX_PATH = D:\Qt\Qt5.14.2\5.14.2\msvc2017_64\lib\cmake
+CommonProgramFiles = C:\Program Files\Common Files
+CommonProgramFiles(x86) = C:\Program Files (x86)\Common Files
+CommonProgramW6432 = C:\Program Files\Common Files
+COMPLUS_InstallRoot = 
+COMPLUS_Version = 
+COMPUTERNAME = DESKTOP-VNTFH0E
+ComSpec = C:\WINDOWS\system32\cmd.exe
+cygwin = C:\cygwin64\bin
+DriverData = C:\Windows\System32\Drivers\DriverData
+EFC_10056 = 1
+FACADES_4.8.0.0 = C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\Facades
+FPS_BROWSER_APP_PROFILE_STRING = Internet Explorer
+FPS_BROWSER_USER_PROFILE_STRING = Default
+GCExpConfigUsedInSession = 3
+GoLand = F:\GoLand 2024.3.1\bin;
+HOMEDRIVE = C:
+HOMEPATH = \Users\jiachangkun
+LOCALAPPDATA = C:\Users\jiachangkun\AppData\Local
+LOGONSERVER = \\DESKTOP-VNTFH0E
+MSBuildLoadMicrosoftTargetsReadOnly = true
+NUMBER_OF_PROCESSORS = 16
+OLLAMA_HOST = 0.0.0.0
+OLLAMA_MODELS = D:\AImodel
+OLLAMA_ORIGINS = *
+OneDrive = C:\Users\贾长坤\OneDrive
+OneDriveConsumer = C:\Users\贾长坤\OneDrive
+OS = Windows_NT
+Path = C:\Program Files (x86)\VMware\VMware Workstation\bin\;F:\python\Scripts\;F:\python\;C:\Python312\Scripts\;C:\Python312\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;F:\Git\cmd;C:\Program Files\Calibre2\;C:\Program Files (x86)\Pandoc\;C:\mingw64\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\dotnet\;F:\cygwin64\bin;E:\EDGEdownload\vcpkg-master\vcpkg-master;C:\Program Files\doxygen\bin;C:\Program Files\CMake\bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;E:\EDGEdownload\conan-2.7.1-windows-x86_64\conan.exe;C:\Program Files\Git\cmd;F:\vcpkg\vcpkg;E:\node.js\;C:\ProgramData\chocolatey\bin;C:\x86_64-elf-tools-windows\bin;C:\Program Files (x86)\qemu;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Git\usr\bin;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;F:\Windows Kits\10\Windows Performance Toolkit\;C:\Users\jiachangkun;C:\Program Files (x86)\VMware\VMware Workstation\bin\;F:\python\Scripts\;F:\python\;C:\Python312\Scripts\;C:\Python312\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;F:\bin;F:\Git\cmd;C:\Program Files\Calibre2\;C:\Program Files (x86)\Pandoc\;C:\mingw64\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\dotnet\;F:\cygwin64\bin;E:\EDGEdownload\vcpkg-master\vcpkg-master;C:\Program Files\doxygen\bin;C:\Program Files\CMake\bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;E:\EDGEdownload\conan-2.7.1-windows-x86_64\conan.exe;C:\Program Files\Git\cmd;F:\vcpkg\vcpkg;E:\node.js\;C:\ProgramData\chocolatey\bin;C:\x86_64-elf-tools-windows\bin;C:\Program Files (x86)\qemu;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Git\usr\bin;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;F:\Windows Kits\10\Windows P;C:\Users\jiachangkun\.dotnet\tools;C:\Users\jiachangkun\AppData\Local\Programs\Ollama
+PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
+PkgDefApplicationConfigFile = C:\Users\jiachangkun\AppData\Local\Microsoft\VisualStudio\17.0_45550542\devenv.exe.config
+PROCESSOR_ARCHITECTURE = AMD64
+PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 167 Stepping 0, GenuineIntel
+PROCESSOR_LEVEL = 6
+PROCESSOR_REVISION = a700
+ProgramData = C:\ProgramData
+ProgramFiles = C:\Program Files
+ProgramFiles(x86) = C:\Program Files (x86)
+ProgramW6432 = C:\Program Files
+PSModulePath = C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;
+PUBLIC = C:\Users\Public
+PyCharm = D:\PyCharm 2024.2.3\bin;
+QTDIR = D:\Qt\Qt5.14.2\5.14.2\msvc2017_64
+QtMsBuild = C:\Users\jiachangkun\AppData\Local\QtMsBuild
+RustRover = D:\RustRover 2024.2.3\bin;
+ServiceHubHostServiceBrokerPipeName = \\.\pipe\6737CDDF-EACF-4E65-9247-3DE96368AB02
+ServiceHubLogSessionKey = 5AAD447C
+SESSIONNAME = Console
+SignInWithHomeTenantOnly = False
+SystemDrive = C:
+SystemRoot = C:\WINDOWS
+TEMP = C:\Users\jiachangkun\AppData\Local\Temp
+ThreadedWaitDialogDpiContext = -4
+TMP = C:\Users\jiachangkun\AppData\Local\Temp
+USERDOMAIN = DESKTOP-VNTFH0E
+USERDOMAIN_ROAMINGPROFILE = DESKTOP-VNTFH0E
+USERNAME = jiachangkun
+USERPROFILE = C:\Users\jiachangkun
+VCPKG_ROOT = F:\vcpkg\vcpkg
+VisualStudioDir = C:\Users\jiachangkun\Documents\Visual Studio 2022
+VisualStudioEdition = Microsoft Visual Studio Community 2022
+VisualStudioVersion = 17.0
+VSAPPIDDIR = C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\
+VSAPPIDNAME = devenv.exe
+VSLANG = 2052
+vsode = C:\mingw64\bin\g++.exe
+VsPerMonitorDpiAwarenessEnabled.24540 = TRUE
+VSSKUEDITION = Community
+VS_Perf_Session_GCHeapCount = 2
+WebStorm = E:\WebStorm 2024.2.3\bin;
+WEBVIEW2_DEFAULT_BACKGROUND_COLOR = ffffff
+windir = C:\WINDOWS
+WindowsSDKVersion = 10.0.26100.0
+ZES_ENABLE_SYSMAN = 1
+
+  main.cpp
+  threadpoolMSbuild.vcxproj -> D:\VS_repo\threadpoolMSbuild\x64\Debug\threadpoolMSbuild.exe
+  'pwsh.exe' 不是内部或外部命令，也不是可运行的程序
+  或批处理文件。
+
+项目性能摘要:
+     5261 毫秒 D:\VS_repo\threadpoolMSbuild\threadpoolMSbuild.vcxproj   1 次调用
+               5261 毫秒 Build                                      1 次调用
+
+目标性能摘要:
+        0 毫秒 AfterResourceCompile                       1 次调用
+        0 毫秒 _Link                                      1 次调用
+        0 毫秒 AfterLink                                  1 次调用
+        0 毫秒 ComputeLinkSwitches                        1 次调用
+        0 毫秒 DoLinkOutputFilesMatch                     1 次调用
+        0 毫秒 MakeDirsForLink                            1 次调用
+        0 毫秒 PrepareResourceNames                       1 次调用
+        0 毫秒 CreateCustomManifestResourceNames          1 次调用
+        0 毫秒 ComputeManifestInputsTargets               1 次调用
+        0 毫秒 ComputeLinkInputsFromProject               1 次调用
+        0 毫秒 ComputeCLGeneratedLinkInputs               1 次调用
+        0 毫秒 ComputeCLOutputs                           1 次调用
+        0 毫秒 _ALink                                     1 次调用
+        0 毫秒 ComputeManifestGeneratedLinkerInputs       1 次调用
+        0 毫秒 ComputeRCOutputs                           1 次调用
+        0 毫秒 BeforeLink                                 1 次调用
+        0 毫秒 ComputeLegacyManifestEmbedding             1 次调用
+        0 毫秒 BuildLinkTraverse                          1 次调用
+        0 毫秒 BuildCompile                               1 次调用
+        0 毫秒 _BuildCompileAction                        1 次调用
+        0 毫秒 AfterBuildCompileEvent                     1 次调用
+        0 毫秒 _ResourceCompile                           1 次调用
+        0 毫秒 MakeDirsForResourceCompile                 1 次调用
+        0 毫秒 BeforeResourceCompile                      1 次调用
+        0 毫秒 _ClCompile                                 1 次调用
+        0 毫秒 ComputeRCGeneratedLinkInputs               1 次调用
+        0 毫秒 AfterClCompile                             1 次调用
+        0 毫秒 _Manifest                                  1 次调用
+        0 毫秒 ResolvedXDCMake                            1 次调用
+        0 毫秒 AfterBuild                                 1 次调用
+        0 毫秒 BuildLink                                  1 次调用
+        0 毫秒 _BuildLinkAction                           1 次调用
+        0 毫秒 PostBuildEvent                             1 次调用
+        0 毫秒 PrepareForRun                              1 次调用
+        0 毫秒 CopyFilesToOutputDirectory                 1 次调用
+        0 毫秒 _CheckForCompileOutputs                    1 次调用
+        0 毫秒 _CopySourceItemsToOutputDirectory          1 次调用
+        0 毫秒 _GetCopyToOutputDirectoryItemsFromThisProject   1 次调用
+        0 毫秒 _GetCopyToOutputDirectoryItemsFromTransitiveProjectReferences   1 次调用
+        0 毫秒 GetCopyToOutputDirectoryXamlAppDefs        1 次调用
+        0 毫秒 RegisterOutput                             1 次调用
+        0 毫秒 _PopulateCommonStateForGetCopyToOutputDirectoryItems   1 次调用
+        0 毫秒 _Appverifier                               1 次调用
+        0 毫秒 CreateSatelliteAssemblies                  1 次调用
+        0 毫秒 _GenerateSatelliteAssemblyInputs           1 次调用
+        0 毫秒 MakeDirsForFxc                             1 次调用
+        0 毫秒 SatelliteDllsProjectOutputGroup            1 次调用
+        0 毫秒 _BscMake                                   1 次调用
+        0 毫秒 MakeDirsForBscMake                         1 次调用
+        0 毫秒 ComputeCLCompileGeneratedSbrFiles          1 次调用
+        0 毫秒 _XdcMake                                   1 次调用
+        0 毫秒 MakeDirsForXdcMake                         1 次调用
+        0 毫秒 ComputeCLCompileGeneratedXDCFiles          1 次调用
+        0 毫秒 _Deploy                                    1 次调用
+        0 毫秒 VcpkgCheckManifestRoot                     1 次调用
+        0 毫秒 Build                                      1 次调用
+        0 毫秒 SelectClCompile                            1 次调用
+        0 毫秒 SelectCustomBuild                          1 次调用
+        0 毫秒 BeforeResolveReferences                    1 次调用
+        0 毫秒 PreBuildEvent                              1 次调用
+        0 毫秒 BeforeBuildGenerateSources                 1 次调用
+        0 毫秒 VcpkgTripletSelection                      1 次调用
+        0 毫秒 BuildGenerateSourcesTraverse               1 次调用
+        0 毫秒 ResolveReferences                          1 次调用
+        0 毫秒 AfterResolveReferences                     1 次调用
+        0 毫秒 ResolveAssemblyReferences                  1 次调用
+        0 毫秒 ExpandSDKReferences                        1 次调用
+        0 毫秒 ResolveSDKReferences                       1 次调用
+        0 毫秒 _PrepareForBuild                           1 次调用
+        0 毫秒 SetCABuildNativeEnvironmentVariables       1 次调用
+        0 毫秒 GetResolvedWinMD                           1 次调用
+        0 毫秒 AddExternalIncludDirectoriesToPaths        1 次调用
+        0 毫秒 GetFrameworkPaths                          1 次调用
+        0 毫秒 ResolveProjectReferences                   1 次调用
+        0 毫秒 PrepareProjectReferences                   1 次调用
+        0 毫秒 _AddOutputPathToGlobalPropertiesToRemove   1 次调用
+        0 毫秒 _SplitProjectReferencesByFileExistence     1 次调用
+        0 毫秒 IgnoreJavaScriptOutputAssembly             1 次调用
+        0 毫秒 CopyFileToFolders                          1 次调用
+        0 毫秒 _Xsd                                       1 次调用
+        0 毫秒 _SelectedFiles                             1 次调用
+        0 毫秒 _PrepareForReferenceResolution             1 次调用
+        0 毫秒 ComputeReferenceCLInput                    1 次调用
+        0 毫秒 SetCppLanguageStandardCapabilities         1 次调用
+        0 毫秒 GetReferencedVCProjectsInfo                1 次调用
+        0 毫秒 MakeDirsForMidl                            1 次调用
+        0 毫秒 FindReferenceAssembliesForReferences       1 次调用
+        0 毫秒 BeforeClCompile                            1 次调用
+        0 毫秒 BuildCompileTraverse                       1 次调用
+        0 毫秒 BuildGenerateSources                       1 次调用
+        0 毫秒 ComputeStdModulesCompileInputs             1 次调用
+        0 毫秒 _BuildGenerateSourcesAction                1 次调用
+        0 毫秒 AfterBuildGenerateSources                  1 次调用
+        0 毫秒 _Midl                                      1 次调用
+        0 毫秒 AfterMidl                                  1 次调用
+        0 毫秒 ComputeMIDLGeneratedCompileInputs          1 次调用
+        0 毫秒 FixupCLCompileOptions                      1 次调用
+        0 毫秒 AfterBuildGenerateSourcesEvent             1 次调用
+        0 毫秒 WarnCompileDuplicatedFilename              1 次调用
+        1 毫秒 ComputeCustomBuildOutput                   1 次调用
+        1 毫秒 ContentFilesProjectOutputGroup             1 次调用
+        1 毫秒 PreLinkEvent                               1 次调用
+        1 毫秒 AssignTargetPaths                          1 次调用
+        1 毫秒 GetReferenceAssemblyPaths                  1 次调用
+        1 毫秒 ComputeCLInputPDBName                      1 次调用
+        1 毫秒 IncrementalClean                           1 次调用
+        1 毫秒 _GetProjectReferenceTargetFrameworkProperties   1 次调用
+        1 毫秒 SplitResourcesByCulture                    1 次调用
+        1 毫秒 MakeDirsForCl                              1 次调用
+        1 毫秒 TlogCleanup                                1 次调用
+        1 毫秒 SetBuildDefaultEnvironmentVariables        1 次调用
+        1 毫秒 CustomBuild                                1 次调用
+        1 毫秒 SetTelemetryEnvironmentVariables           1 次调用
+        1 毫秒 AssignProjectConfiguration                 1 次调用
+        1 毫秒 _CleanGetCurrentAndPriorFileWrites         1 次调用
+        1 毫秒 BuiltProjectOutputGroup                    1 次调用
+        1 毫秒 CreateRecipeFile                           1 次调用
+        1 毫秒 _CheckWindowsSDKInstalled                  1 次调用
+        2 毫秒 GetCopyToOutputDirectoryItems              1 次调用
+        2 毫秒 _CheckForInvalidConfigurationAndPlatform   1 次调用
+        2 毫秒 FinalizeBuildStatus                        1 次调用
+        3 毫秒 InitializeBuildStatus                      1 次调用
+        5 毫秒 PrepareForBuild                            1 次调用
+      542 毫秒 AppLocalFromInstalled                      1 次调用
+     1460 毫秒 Link                                       1 次调用
+     3220 毫秒 ClCompile                                  1 次调用
+
+任务性能摘要:
+        0 毫秒 GetOutOfDateItems                          3 次调用
+        0 毫秒 RemoveDuplicates                           2 次调用
+        0 毫秒 FindUnderPath                              5 次调用
+        0 毫秒 MSBuild                                    1 次调用
+        0 毫秒 SetRidAgnosticValueForProjects             1 次调用
+        0 毫秒 ConvertToAbsolutePath                      1 次调用
+        0 毫秒 CheckVCToolsetVersion                      1 次调用
+        0 毫秒 CallTarget                                 2 次调用
+        1 毫秒 AssignTargetPath                           7 次调用
+        1 毫秒 Message                                    8 次调用
+        1 毫秒 AssignCulture                              1 次调用
+        1 毫秒 MakeDir                                   10 次调用
+        1 毫秒 CleanupStaleTlogItems                      1 次调用
+        1 毫秒 SetEnv                                    11 次调用
+        1 毫秒 AssignProjectConfiguration                 1 次调用
+        1 毫秒 Delete                                     2 次调用
+        1 毫秒 WriteLinesToFile                           1 次调用
+        1 毫秒 GenerateDesktopDeployRecipe                1 次调用
+        2 毫秒 ReadLinesFromFile                          3 次调用
+        2 毫秒 VCMessage                                  1 次调用
+        2 毫秒 Touch                                      2 次调用
+      540 毫秒 Exec                                       2 次调用
+     1458 毫秒 Link                                       1 次调用
+     3218 毫秒 CL                                         1 次调用
