@@ -125,6 +125,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="threadpool.h" />
+    <ClInclude Include="tp.h" />
+    <ClInclude Include="tq.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

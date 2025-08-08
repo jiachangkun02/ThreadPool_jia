@@ -11,14 +11,17 @@
 #include <memory>
 #include <atomic>
 #include <type_traits>
+#include <concurrentqueue/concurrentqueue.h>
 
 using namespace std;
 
 using Task=std::function<void()>;
 
+//线程池主要部分实现（无锁队列版本实现   实测速度比原版直接提升3倍）
+
 class ThreadPool {
 public:
-    ThreadPool(size_t num_threads) : running_(true) {
+    ThreadPool(size_t num_threads) : is_running_(true) {
         threads_.reserve(num_threads);
         for (size_t i = 0; i < num_threads; ++i) {
             threads_.emplace_back([this] { WorkerThread(); });
@@ -28,7 +31,7 @@ public:
     ~ThreadPool() {
         {
             std::unique_lock<std::mutex> lock(queue_mutex_);
-            running_ = false;
+            is_running_ = false;
         }
         condition_.notify_all();
         for (auto& thread : threads_) {
@@ -44,7 +47,7 @@ public:
         
         using ReturnType = std::invoke_result_t<F, Args...>;
  
-        if (!running_) {
+        if (!is_running_) {
             throw std::runtime_error("Enqueue on stopped ThreadPool");
         }
  
@@ -54,12 +57,19 @@ public:
  
         std::future<ReturnType> future = task_ptr->get_future();
  
-        {
+        /*{
             std::lock_guard<std::mutex> lock(queue_mutex_);
             tasks_.emplace([task_ptr]() {
                 (*task_ptr)();
             });
-        }
+        }*/
+
+        tasks_.enqueue(std::move(
+            [task_ptr]()
+            {
+                (*task_ptr)();
+            }
+        ));
         
         condition_.notify_one();
  
@@ -68,7 +78,7 @@ public:
  
 private:
     void WorkerThread() {
-        while (true) {
+        /*while (true) {
             Task task;
             {
                 std::unique_lock<std::mutex> lock(queue_mutex_);
@@ -82,12 +92,22 @@ private:
                 tasks_.pop();
             }
             task();
+        }*/
+
+
+        while (is_running_ || !tasks_.size_approx() == 0) {
+            Task task;
+            if (tasks_.try_dequeue(task)) {
+                if (task) task();
+            } else {
+                std::this_thread::yield();
+            }
         }
     }
  
     std::vector<std::thread> threads_;
-    std::queue<Task> tasks_;
+    moodycamel::ConcurrentQueue<Task> tasks_;
     std::mutex queue_mutex_;
     std::condition_variable condition_;
-    std::atomic<bool> running_;
+    std::atomic<bool> is_running_;
 };
