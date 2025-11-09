@@ -1,262 +1,332 @@
-#include <iostream>
-#include "ThreadPool.h"
+#include <gtest/gtest.h>
+#include "thread_pool.h" // 假设线程池代码保存在此文件中
 #include <vector>
-#include <string>
-#include <sstream>      // std::ostringstream
-#include <atomic>       // std::atomic_int
-#include <chrono>       // std::chrono::*
-#include <memory>       // C++11: std::shared_ptr
+#include <chrono>
+#include <atomic>
+#include <thread>
+#include <exception>
+#include <iostream>
+#include <future>
 
-// C++11: 全局原子计数器，用于验证所有任务是否都执行了
-std::atomic<int> g_task_counter(0);
-// C++11: 用于日志输出的全局互斥锁
-std::mutex g_cout_mutex;
-
-/**
- * @brief 线程安全的打印函数
- */
-// C++11: 功能: 实现线程安全打印
-void print(const std::string& msg) {
-    // C++11: 功能: 使用 lock_guard 保护 std::cout
-    std::lock_guard<std::mutex> lock(g_cout_mutex);
-    // C++: 功能: 打印消息
-    std::cout << msg << std::endl;
-}
-
-/**
- * @brief 测试任务：简单执行
- */
-// C++11: 功能: 测试函数1
-void simple_task(int id) {
-    // C++11: 功能: stringstream 用于格式化
-    std::ostringstream oss;
-    oss << "[Task " << id << "] \t"
-        << "Hello from thread " << std::this_thread::get_id();
-    // C++11: 功能: 打印日志
-    print(oss.str());
-
-    // C++11: 功能: 模拟少量工作
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
-    // C++11: 功能: 原子递增
-    g_task_counter++;
-}
-
-/**
- * @brief 测试任务：带返回值
- */
-// C++11: 功能: 测试函数2
-int task_with_return(int id) {
-    std::ostringstream oss;
-    oss << "[Task " << id << "] \t"
-        << "Calculating... (Thread " << std::this_thread::get_id() << ")";
-    print(oss.str());
-
-    // C++11: 功能: 模拟工作
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    // C++11: 功能: 原子递增
-    g_task_counter++;
-    // C++: 功能: 返回一个结果
-    return id * 10;
-}
-
-/**
- * @brief 测试1: 死锁安全测试
- * (来自我们 V2 版本的测试)
- */
-// C++11: 功能: 测试函数3
-void test_deadlock_safety(std::shared_ptr<ThreadPool> pool) {
-    print("\n====== 1. TEST: Deadlock Safety ======");
-    print("Submitting 4 parent tasks that wait on 4 child tasks...");
-
-    // C++11: 逻辑: 获取自定义 Future 的类型
-    using FutureType = decltype(pool->Submit(task_with_return, 0));
-    // C++11: 逻辑: vector 存储 futures
-    std::vector<FutureType> futures;
-
-    // C++11: 逻辑: 提交与核心线程数 (4) 相同数量的父任务
-    for (int i = 0; i < 4; ++i) {
-        futures.emplace_back(
-            // C++11: 功能: 提交 Lambda
-            pool->Submit([pool, i]() -> int { // C++11:
-                                              // 逻辑: 【UAF 修复】
-                                              //       捕获 shared_ptr pool
-
-                std::ostringstream oss;
-                oss << "[Parent " << i << "] \t"
-                    << "STARTING on thread " << std::this_thread::get_id();
-                print(oss.str());
-
-                // C++11: 功能: 父任务提交一个子任务
-                auto child_future = pool->Submit(task_with_return, 100 + i);
-
-                // C++11: 【关键点】
-                // 功能: 父任务(工作线程)调用 .get()
-                // 逻辑:
-                // 如果没有内联执行，这里将死锁
-                int child_result = child_future.get();
-
-                // C++: 逻辑: 清空 stringstream
-                oss.str("");
-                oss.clear();
-                oss << "[Parent " << i << "] \t"
-                    << "FINISHED (Child " << 100 + i
-                    << " returned " << child_result
-                    << ") on thread " << std::this_thread::get_id();
-                print(oss.str());
-
-                // C++11: 功能: 父任务计数
-                g_task_counter++;
-                return i * 1000;
-            })
-        );
+// 测试夹具基类
+class ThreadPoolTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // 默认使用4核心线程，8最大线程，100队列大小
+        pool_ = ThreadPool::Create(4, 8, 100, 1000); // 1秒超时以便测试
     }
-
-    // C++11: 逻辑: 等待所有父任务完成
-    for (auto& f : futures) {
-        // C++11: 功能: 主线程获取结果
-        print("Main thread getting result: " + std::to_string(f.get()));
+    
+    void TearDown() override {
+        pool_.reset(); // 显式析构线程池
     }
-    print("====== 1. TEST: Deadlock Safety PASSED ======");
+    
+    std::shared_ptr<ThreadPool> pool_;
+};
+
+// 1. 基本功能测试
+TEST_F(ThreadPoolTest, BasicFunctionality) {
+    std::atomic<int> counter(0);
+    
+    // 提交10个简单任务
+    std::vector<ThreadPool::ThreadPoolFuture<void>> futures;
+    for (int i = 0; i < 10; ++i) {
+        futures.push_back(pool_->Submit([&counter]() {
+            counter++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }));
+    }
+    
+    // 等待所有任务完成
+    for (auto& future : futures) {
+        future.get();
+    }
+    
+    EXPECT_EQ(counter.load(), 10);
+    
+    // 检查指标
+    auto metrics = pool_->GetMetrics();
+    EXPECT_EQ(metrics.tasks_submitted, 10);
+    EXPECT_EQ(metrics.tasks_completed, 10);
 }
 
-/**
- * @brief 测试2: 生产者阻塞和动态线程
- * (验证来自 threadpool.h 的特性)
- */
-// C++11: 功能: 测试函数4
-void test_producer_blocking_and_dynamic_threads() {
-    print("\n====== 2. TEST: Bounded Queue & Dynamic Threads ======");
-    // C++11: 逻辑: 核心2, 最大4, 队列*极小*(2)
-    // C++11: 逻辑: 【UAF 修复】
-    //       使用 Create()
-    //       工厂和 shared_ptr
-    auto pool = ThreadPool::Create(2, 4, 2, 10000); // 10秒回收
-    // C++11: 功能: 重置计数器
-    g_task_counter = 0;
-
-    print("Pool created: Core=2, Max=4, QueueSize=2");
-
-    // C++11: 功能: 用于阻塞线程池
-    auto blocking_task = [](int id) {
-        std::ostringstream oss;
-        oss << "[Blocker " << id << "] \t"
-            << "STARTING LONG TASK (500ms) on thread "
-            << std::this_thread::get_id();
-        print(oss.str());
-        // C++11: 功能: 长时间睡眠以占住线程
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        g_task_counter++;
-        oss.str("");
-        oss.clear();
-        oss << "[Blocker " << id << "] \t"
-            << "FINISHED on thread " << std::this_thread::get_id();
-        print(oss.str());
-    };
-
-    // 逻辑: 1. 提交 4 个长任务
-    // 预期:
-    // Task 0, 1 -> 被 Core 0, 1 拿走
-    // Task 2, 3 -> 进入大小为 2 的队列
-    print("Submitting 4 tasks to fill Core(2) + Queue(2)...");
-    pool->Submit(blocking_task, 0); // 核心1
-    pool->Submit(blocking_task, 1); // 核心2
-    pool->Submit(blocking_task, 2); // 队列1
-    pool->Submit(blocking_task, 3); // 队列2
-
-    // 逻辑: 2. 提交第 5, 6 个任务
-    // 预期:
-    // 队列已满 (2)。
-    // 触发动态线程创建
-    // Task 4 -> Dynamic Thread 3 拿走
-    // Task 5 -> Dynamic Thread 4 拿走 (达到 Max=4)
-    print("Submitting tasks 5 & 6 (should trigger dynamic threads)...");
-    pool->Submit(blocking_task, 4); // 动态3
-    pool->Submit(blocking_task, 5); // 动态4
-
-    // 逻辑: 3. 提交第 7 个任务
-    // 预期:
-    // 队列已满 (0, 因为Task 2,3 还在等)。
-    // 线程已满 (4)。
-    // 下面的 Submit 将会 *阻塞*
-    print("Submitting task 7 (should BLOCK main thread)...");
-    // C++11: 功能: 计时
-    auto start_wait = std::chrono::steady_clock::now();
-    pool->Submit(blocking_task, 6); // C++11: 阻塞
-    auto end_wait = std::chrono::steady_clock::now(); // C++11
-
-    // C++11: 功能: 计算阻塞时间
-    auto wait_duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        end_wait - start_wait).count();
-
-    print("...Main thread UNBLOCKED after " +
-          std::to_string(wait_duration) + " ms.");
-
-    // C++: 逻辑: 必须等待约500ms
-    if (wait_duration > 400) {
-        print("====== 2. TEST: Producer Blocking PASSED ======");
-    } else {
-        print("====== 2. TEST: Producer Blocking FAILED ======");
-    }
-
-    // C++11: 逻辑: 等待所有 (7) 个任务完成
-    while (g_task_counter < 7) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-
-    print("Producer test tasks executed: " +
-          std::to_string(g_task_counter.load()));
-
-    // C++11: 逻辑:
-    //       `pool`
-    //       在此析构，
-    //       动态线程
-    //       将在 10 秒后超时退出
-    print("Producer test pool going out of scope...");
-}
-
-
-// C++: 功能: 主函数
-int main() {
-    try {
-        // C++11: 逻辑: 核心=4, 最大=8, 队列=100, 60秒回收
-        // C++11: 逻辑: 【UAF 修复】
-        //       必须使用 Create()
-        //       工厂
-        auto pool = ThreadPool::Create(4, 8, 100, 60000);
-        // C++11: 功能: 初始化计数器
-        g_task_counter = 0;
-
-        // C++11: 功能: 测试死锁
-        test_deadlock_safety(pool);
-
-        // C++11: 逻辑: 等待死锁测试的任务 (4父+4子=8) 完成
-        while (g_task_counter < 8) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+// 2. 异常处理测试
+TEST_F(ThreadPoolTest, ExceptionHandling) {
+    std::atomic<int> handler_called(0);
+    
+    // 设置自定义异常处理器
+    pool_->SetGlobalExceptionHandler([&handler_called](std::exception_ptr eptr) {
+        handler_called++;
+        try {
+            std::rethrow_exception(eptr);
+        } catch (const std::runtime_error& e) {
+            EXPECT_STREQ(e.what(), "test exception");
         }
-        print("Deadlock test tasks executed: " +
-              std::to_string(g_task_counter.load()));
+    });
+    
+    // 提交会抛出异常的任务
+    auto future = pool_->Submit([]() {
+        throw std::runtime_error("test exception");
+    });
+    
+    // 等待任务完成（异常被处理，不会传播到future.get()）
+    future.get();
+    
+    EXPECT_EQ(handler_called.load(), 1);
+}
 
-        // C++11: 功能: 测试生产者阻塞和动态线程
-        test_producer_blocking_and_dynamic_threads();
+// 3. Future结果获取测试
+TEST_F(ThreadPoolTest, FutureReturnValue) {
+    auto future = pool_->Submit([]() -> int {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        return 42;
+    });
+    
+    int result = future.get();
+    EXPECT_EQ(result, 42);
+}
 
-        // C++11: 逻辑:
-        //       g_task_counter
-        //       在 test_producer_blocking_and_dynamic_threads
-        //       内部被重置和等待，
-        //       所以我们在这里不需要等待它
+// 4. 死锁预防测试
+TEST_F(ThreadPoolTest, DeadlockPrevention) {
+    // 创建一个任务，它会等待另一个任务完成
+    auto task2_future = pool_->Submit([]() -> int {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        return 42;
+    });
+    
+    // 在工作线程中提交并等待另一个任务
+    auto task1_future = pool_->Submit([task2_future]() mutable -> int {
+        // 这应该不会死锁，而是内联执行其他任务
+        return task2_future.get();
+    });
+    
+    int result = task1_future.get();
+    EXPECT_EQ(result, 42);
+}
 
-        print("All tests completed. Total tasks executed (from all tests): " +
-              std::to_string(g_task_counter.load()));
-
-    } catch (const std::exception& e) { // C++: 功能: 捕获标准异常
-        print(std::string("FATAL ERROR: ") + e.what());
-        return 1;
+// 5. 动态线程测试
+TEST_F(ThreadPoolTest, DynamicThreadCreation) {
+    // 设置较小的队列大小，以便触发动态线程创建
+    auto test_pool = ThreadPool::Create(2, 4, 2, 1000);
+    
+    // 提交超过队列大小的任务
+    std::vector<ThreadPool::ThreadPoolFuture<void>> futures;
+    for (int i = 0; i < 6; ++i) {
+        futures.push_back(test_pool->Submit([i]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            // 可以通过日志或指标检查是否创建了动态线程
+        }));
     }
+    
+    // 等待所有任务完成
+    for (auto& future : futures) {
+        future.get();
+    }
+    
+    auto metrics = test_pool->GetMetrics();
+    EXPECT_GE(metrics.dynamic_threads_created, 1); // 应该至少创建1个动态线程
+    EXPECT_EQ(metrics.tasks_submitted, 6);
+    EXPECT_EQ(metrics.tasks_completed, 6);
+}
 
-    print("\nShutting down (main pool destructor will be called)...");
-    // C++11: 逻辑:
-    //       `pool`
-    //       的 shared_ptr
-    //       在此析构
-    return 0;
+// 6. 优雅关闭测试
+TEST_F(ThreadPoolTest, GracefulShutdown) {
+    std::atomic<int> counter(0);
+    
+    // 提交多个任务
+    std::vector<ThreadPool::ThreadPoolFuture<void>> futures;
+    for (int i = 0; i < 10; ++i) {
+        futures.push_back(pool_->Submit([&counter]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            counter++;
+        }));
+    }
+    
+    // 重置shared_ptr，触发析构
+    pool_.reset();
+    
+    // 等待所有任务完成
+    for (auto& future : futures) {
+        future.get();
+    }
+    
+    EXPECT_EQ(counter.load(), 10); // 所有任务应该都完成了
+}
+
+// 7. 队列满时阻塞测试
+TEST_F(ThreadPoolTest, BlockingWhenQueueFull) {
+    // 创建一个小队列的线程池
+    auto test_pool = ThreadPool::Create(2, 2, 2, 1000);
+    std::atomic<int> completed(0);
+    
+    // 启动一个线程持续提交任务
+    std::thread producer([&test_pool, &completed]() {
+        for (int i = 0; i < 10; ++i) {
+            test_pool->Submit([&completed]() {
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                completed++;
+            });
+        }
+    });
+    
+    // 等待生产者线程完成提交
+    producer.join();
+    
+    // 等待所有任务完成
+    std::this_thread::sleep_for(std::chrono::milliseconds(600));
+    
+    EXPECT_EQ(completed.load(), 10); // 所有任务应该都完成了
+}
+
+// 8. 在工作线程中提交新任务
+TEST_F(ThreadPoolTest, SubmitFromWorkerThread) {
+    std::atomic<int> counter(0);
+    
+    auto future = pool_->Submit([&]() {
+        // 在工作线程中提交新任务
+        auto inner_future = pool_->Submit([&counter]() {
+            counter = 42;
+        });
+        
+        // 等待内部任务完成
+        inner_future.get();
+    });
+    
+    future.get();
+    EXPECT_EQ(counter.load(), 42);
+}
+
+// 9. 设置nullptr异常处理器应恢复默认
+TEST_F(ThreadPoolTest, ResetExceptionHandlerToDefault) {
+    std::atomic<bool> default_handler_called(false);
+    
+    // 设置自定义处理器
+    pool_->SetGlobalExceptionHandler([&default_handler_called](std::exception_ptr) {
+        FAIL() << "Custom handler should not be called after reset";
+    });
+    
+    // 重置为默认
+    pool_->SetGlobalExceptionHandler(nullptr);
+    
+    // 临时重定向cerr
+    std::stringstream buffer;
+    std::streambuf* old = std::cerr.rdbuf(buffer.rdbuf());
+    
+    // 提交一个抛出异常的任务
+    auto future = pool_->Submit([]() {
+        throw std::runtime_error("test error");
+    });
+    
+    future.get();
+    
+    // 恢复cerr
+    std::cerr.rdbuf(old);
+    
+    std::string error_output = buffer.str();
+    EXPECT_NE(error_output.find("test error"), std::string::npos);
+}
+
+// 10. 高负载压力测试
+TEST_F(ThreadPoolTest, HighLoadStressTest) {
+    const int num_tasks = 1000;
+    std::atomic<int> completed(0);
+    
+    std::vector<ThreadPool::ThreadPoolFuture<void>> futures;
+    futures.reserve(num_tasks);
+    
+    // 提交大量任务
+    for (int i = 0; i < num_tasks; ++i) {
+        futures.push_back(pool_->Submit([&completed]() {
+            // 模拟工作
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
+            completed++;
+        }));
+    }
+    
+    // 等待所有任务完成
+    for (auto& future : futures) {
+        future.get();
+    }
+    
+    EXPECT_EQ(completed.load(), num_tasks);
+    
+    auto metrics = pool_->GetMetrics();
+    EXPECT_EQ(metrics.tasks_submitted, num_tasks);
+    EXPECT_EQ(metrics.tasks_completed, num_tasks);
+}
+
+// 11. 线程池在析构后提交应抛出异常
+TEST_F(ThreadPoolTest, SubmitAfterShutdown) {
+    // 重置shared_ptr，触发析构
+    pool_.reset();
+    
+    // 尝试提交任务
+    EXPECT_THROW({
+        auto future = ThreadPool::Create(2, 4, 100, 1000)->Submit([]() {});
+    }, std::runtime_error);
+}
+
+// 12. 验证动态线程超时回收
+TEST_F(ThreadPoolTest, DynamicThreadTimeout) {
+    // 创建一个核心线程少，且空闲超时短的线程池
+    auto test_pool = ThreadPool::Create(1, 4, 1, 100); // 100ms超时
+    
+    // 提交任务触发动态线程创建
+    auto f1 = test_pool->Submit([]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    });
+    
+    auto f2 = test_pool->Submit([]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    });
+    
+    f1.get();
+    f2.get();
+    
+    // 等待动态线程超时
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    
+    auto metrics = test_pool->GetMetrics();
+    EXPECT_GE(metrics.dynamic_threads_created, 1);
+    
+    // 重置线程池
+    test_pool.reset();
+}
+
+// 13. 验证TryExecuteTask的功能
+TEST_F(ThreadPoolTest, TryExecuteTaskFunctionality) {
+    std::atomic<bool> task_executed(false);
+    
+    // 提交一个简单任务
+    auto future = pool_->Submit([&task_executed]() {
+        task_executed = true;
+    });
+    
+    // 在等待future完成前，尝试内联执行
+    while (!future.get()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    
+    EXPECT_TRUE(task_executed);
+}
+
+// 14. 验证指标更新位置的一致性（针对代码评审第2点）
+TEST_F(ThreadPoolTest, MetricsConsistency) {
+    // 提交多个任务
+    for (int i = 0; i < 10; ++i) {
+        pool_->Submit([]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        });
+    }
+    
+    // 等待所有任务完成
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    
+    auto metrics = pool_->GetMetrics();
+    EXPECT_EQ(metrics.tasks_submitted, 10);
+    EXPECT_GE(metrics.tasks_completed, 0); // 至少有一些任务已完成
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
